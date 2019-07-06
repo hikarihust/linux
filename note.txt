@@ -33,3 +33,64 @@
 	RedHat cũng rất phổ biến, thường thì RedHat cho các hệ điều hành máy chủ server, từ nó đã sinh ra các hệ điều hành khác
 		đáng kể đó là CentOS
 	Linux family tree
+- Cài đặt Ubuntu Server:
+	Keyword: Set Up a Local Linux Environment with Vagrant
+	Tạo môi trường thực hành Linux với môi trường là máy ảo Ubuntu Server sử dụng công cụ là Virtualbox kết hợp với Vagrant
+	Với cách này thì có thể cài máy ảo ở trên mọi hệ điều hành
+	Để dễ thao tác thì nên cài thêm phần mềm nữa đó là Git 
+	Link download:
+		Virtualbox: https://www.virtualbox.org/wiki/Downloads
+		Vagrant: https://www.vagrantup.com/downloads.html
+	Thứ tự cài đó là: Git, Virtualbox, Vagrant
+	Chú ý đó là cần phải cài Virtualbox trước rồi mới cài Vagrant bởi vì Vagrant sẽ sử dụng Virtualbox
+	VirtualBox: Là phần mềm tạo máy ảo, giả lập môi trường hệ điều hành khác mà không cần cài lại hệ điều hành
+	Vagrant: Công cụ xây dựng và quản lý máy ảo qua các dòng lệnh
+		Tham khảo các lệnh trong Vagrant: https://www.vagrantup.com/docs/cli/
+		Để kiểm tra xem Vagrant đã được cài đặt xong chưa: vagrant -v
+	Sau khi cài xong các phần mềm cần thiết thì tiến hành dựng máy ảo
+		Tạo folder Ubuntu server, folder này sẽ chứa toàn bộ data của máy ảo
+		Git bash here tại thư mục Ubuntu server, nó giống như là Terminal ở trên các hệ điều hành Linux
+		pwd: In ra đường dẫn đầy đủ đến thư mục hiện hành(Lệnh của Linux)
+		touch Vagrantfile: Tạo ra 1 file mới có tên là Vagrantfile, file này không có đuôi, đây sẽ là file để cấu hình
+		Mở thư mục này lên và điền vào nội dung:
+			Vagrant.configure(2) do |config|
+					config.vm.box = "ubuntu/xenial64"
+					config.vm.hostname = "local-server"
+					config.vm.network "private_network", ip: "172.20.20.20"
+
+					config.vm.provider "virtualbox" do |vb|
+							vb.gui = false
+							vb.memory = 2048
+							vb.cpus = 1
+					end
+			end
+		Tên hệ điều hành: ubuntu/xenial64
+		Tên host: local-servers
+		Loại mạng: private_network
+		ip: 172.20.20.20
+		RAM: 2048
+		CPU: 1
+		vagrant up: Bắt đầu quá trình cài đặt máy ảo, sau khi câu lệnh được hoàn thành thì ta đã có 1 máy ảo là Ubuntu Server
+		Kiểm tra lại ở trong VirtualBox
+		vagrant ssh: Để kết nối remote vào trong máy ảo -> kết nối với server
+		ifconfig: Sau khi kết nối với server, dùng lệnh này để kiểm tra địa chỉ ip của server, địa chỉ này giống với địa chỉ đã
+			cấu hình ở Vagrantfile
+		exit: Đóng kết nối
+		vagrant halt: Tắt máy ảo -> Kiểm tra lại ở trong VirtualBox thì lúc này trạng thái của máy ảo chuyển sang trạng thái power off
+		Nếu username có tên là username, directory của home là /home(thư mục username nằm ngay trong home) thì:
+			cd ~: Trở về thư mục gốc username là /home/username
+			<=>cd /home/username
+		cd ../: Quay trỏ lại thư mục chứa nó
+		cd /: Quay trở về vị trí cao nhất
+		./foldername: Vào foldername cùng cấp với vị trí hiện tại
+		ls: List ra file và thư mục nằm trong thư mục hiện hành
+		cat <tên file>: Đọc và in nội dung file ra màn hình
+		mkdir: Tạo thư mục mới vào trong thư mục hiện hành(make directory)
+		rmdir: Xóa 1 thư mục(remove directory) 
+		rm <tên file>: Xóa file
+		cp <file nguồn> <file đích>  sao chép file từ vị trí nguồn đến vị trí đích.
+		mv <nguồn> <đích>  di chuyển một file hoặc thư mục từ vị trí này sang vị trí khác. Lệnh này cũng dùng để đổi tên file hoặc thư 
+			mục nếu như <nguồn> và <đích> là cùng một thư mục.
+		Ngoài việc sử dụng vagrant để cài đặt máy ảo Linux thì nó còn cho phép ta cấu hình, cài đặt luôn các phầm mềm khác ở trong máy ảo
+		Nhờ file cấu hình Vagrantfile thì chúng ta có thể chia sẻ môi trường làm việc với người khác bằng cách copy file Vagrantfile sau
+			đó chay vagrant up
