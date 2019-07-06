@@ -1,0 +1,35 @@
+															             BASIC LINUX
+====================================== Cài đặt môi trường ======================================
+- Các biến thể Linux - Linux Distro:
+  Tiêu chế chọn hệ điều hành Linux để dùng
+	1- Cho server hay desktop hay iOT
+	2- Nếu là desktop:
+		- Cần có giao diện đẹp, dễ dùng: Ubuntu, Linux Mint, ElementaryOS
+		- Nhiều gói ứng dụng office: LibreOffice, xử lý đồ họa: Gimf
+		- Liên tục cập nhật, kiểm tra xem lần cập nhật gần đây nhất của hệ điều hành đó là khi nào
+	3- Nếu là server:
+		- Kiến trúc mà hệ điều hành này hỗ trợ: Intel 32 Bit, 64 Bit hay là có hỗ trợ ARM hay không
+		- Mức độ bảo mật: CentOS, RedHat, Debian
+		- Trên máy chủ thì thường cài các phần mềm như: PHP, NodeJs, Python, Rails -> cần phải cài đặt dễ
+			dàng các gói phần mềm này
+		- Càng nhỏ, càng nhẹ càng tốt. Vì nhiều hệ điều hành chung nhau trên 1 máy chủ vật lý thì RAM, CPU sẽ 
+			chia sẻ với nhau do đó nếu hệ điều hành của mình tốn nhiều dung lượng ổ cứng và RAM thì không tốt
+	4- iOT
+		- Hỗ trợ các loại chíp ARM
+		- Nhỏ, nhẹ, hỗ trợ giao tiếp với các cổng(port), hỗ trợ các chuẩn kết nối với nhau
+	Trang web tham khảo các thông tin: https://distrowatch.com/
+	Cách xem thông tin:
+		Last Update: Ngày cập nhật gần nhất
+		OS Type: Hệ điều hành là hệ điều hành gì
+		Based on: Kế thừa từ đâu
+		Origin: Xuất xứ từ đâu
+		Architecture: Kiến trúc CPU nó hỗ trợ(x86_64 -> 32bit và 64bit)
+		Desktop: Trình quản lý desktop. Đối với những hệ điều hành Linux nó có giao diện
+			Khi sử dụng Linux thì nên sử dụng hệ điều hành server(cần nhẹ nhất), sử dụng desktop thì dùng window hoặc mac. 
+				Thông thường thì riêng phần trình quản lý giao diện thôi chiếm khoảng 500M, vì khá nặng nên không nên dùng hệ 
+				điều hành desktop để cài trên máy chủ
+	Debian: Là 1 hệ điều hành rất phổ biến, từ nó đã sinh ra rất nhiều hệ điều hành khác nhau trong đó đáng kể đến đó là
+		Ubuntu
+	RedHat cũng rất phổ biến, thường thì RedHat cho các hệ điều hành máy chủ server, từ nó đã sinh ra các hệ điều hành khác
+		đáng kể đó là CentOS
+	Linux family tree
