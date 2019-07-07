@@ -115,3 +115,16 @@
 	cp <file nguồn> <file đích> sao chép file từ vị trí nguồn đến vị trí đích
 	cp -r <thư mục nguồn> <thư mục đích>: sao chép thư mục và toàn bộ dữ liệu bên trong.
 	mv <tên file> <thư mục đích>: Move file đến 1 thư mục nào đó
+- Tìm kiếm file, thư mục:
+	Keyword: find command in Linux
+	Cách tìm các tệp, thư mục để thực hiện 1 thao tác nào đó khi nhớ mang máng tên của nó hoặc chỉ nhớ vị trí đại khái -> không thể dùng
+		lệnh cd và ls để tìm được mà phải dùng lệnh tìm kiếm
+		-> dùng lệnh find, lệnh này cho phép người dùng tìm file nếu mà biết gần đúng tên file
+	find .: Liệt kê tất cả các file
+	find . -name <tên file>: Tìm kiếm theo tên file -> kết quả sẽ in ra đường dẫn tuyệt đối của file
+		Ở câu lệnh này thì khi tìm kiếm sẽ có phân biệt cả chữ hoa chữ thường
+	find . -iname <tên file>: Tìm kiếm theo tên file -> kết quả sẽ in ra đường dẫn tuyệt đối của file
+		Tìm kiếm mà không phân biệt chữ hoa và chữ thường
+	find -name qua*.txt: Tìm tập tin có đuôi là txt mà tên được bắt đầu là qua
+	find . -name quang\*: Tìm kiếm tất cả các tập tin và thư mục nằm trong thư mục hiện hành có bắt đầu là quang
+	find -type f -name '*txt': Tìm kiếm tất cả các file có đuôi là .txt
