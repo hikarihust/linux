@@ -65,7 +65,7 @@
 					end
 			end
 		Tên hệ điều hành: ubuntu/xenial64
-		Tên host: local-servers
+		Tên host: local-server
 		Loại mạng: private_network
 		ip: 172.20.20.20
 		RAM: 2048
@@ -73,6 +73,7 @@
 		vagrant up: Bắt đầu quá trình cài đặt máy ảo, sau khi câu lệnh được hoàn thành thì ta đã có 1 máy ảo là Ubuntu Server
 		Kiểm tra lại ở trong VirtualBox
 		vagrant ssh: Để kết nối remote vào trong máy ảo -> kết nối với server
+			password mặc định là vagrant
 		ifconfig: Sau khi kết nối với server, dùng lệnh này để kiểm tra địa chỉ ip của server, địa chỉ này giống với địa chỉ đã
 			cấu hình ở Vagrantfile
 		exit: Đóng kết nối
@@ -128,7 +129,7 @@
 	find -name qua*.txt: Tìm tập tin có đuôi là txt mà tên được bắt đầu là qua
 	find . -name quang\*: Tìm kiếm tất cả các tập tin và thư mục nằm trong thư mục hiện hành có bắt đầu là quang
 	find -type f -name '*txt': Tìm kiếm tất cả các file có đuôi là .txt
-	
+
 - Cách sử dụng vim để mở và edit file trên server:
 	Keyword: How to quit the vi/vim editor without saving your changes
 	vim quang.txt: Mở file quang.txt bằng trình soạn thảo vim
@@ -144,3 +145,57 @@
 		:q: Thoát
 		Sau đó có thể dùng lệnh cat để xem lại nội dung file trên:
 			cat quang.txt
+	
+====================================== Users và Groups ======================================
+- Users và Groups:
+	Mỗi người dùng sẽ có 1 tài khoản để truy cập vào máy, sau khi đăng nhập xong thì người dùng mới có thể sử dụng tài nguyên
+		ở trên máy
+	Mỗi username có 1 tài khoản gồm có username và passwd dùng để đăng nhập, dựa vào tài khoản đó thì hệ thống sẽ cấp quyền truy
+		cập hay là tương tác với các tài nguyên ở trên máy cho từng user
+	Mỗi user sẽ nằm trong 1 hay nhiều group
+	Group là các nhóm user với 1 quyền hạn cụ thể nào đó
+	Ngoài tên ra thì mỗi user có 1 id để định danh gọi là UID, UID(userID) này là duy nhất, không trùng lặp
+	Tương tự như user thì mỗi group cũng có 1 group để định danh gọi là GID(groupID)
+	Mỗi user đều có 1 thư mục gọi là Home Directory, mỗi lần đăng nhập vào hệ thống thì thư mục hiện hành cũng chính là thư mục
+		home này
+	pwd: Kiểm tra thư mục hiện hành. Với tài khoản vagrant vừa được tạo ra thì thư mục hiện hành sẽ là /home/vagrant
+	cat /etc/passwd: Xem thông tin của các user, file này là file Read-Only, chỉ có quyền đọc mà không có quyền sửa bởi vì mặc định
+		tài khoản username đã tạo là tại khoản thường, không phải là tài khoản có quyền sửa file hệ thống
+		Nội dung của file này sẽ gồm nhiều dòng, mỗi dòng là thông tin của 1 user
+			vagrant:x:1000:1000:,,,:/home/vagrant:/bin/bash
+		Trong mỗi 1 dòng được chia làm 7 phần được ngăn cách mới nhau bởi dấu 2 chấm theo thứ tự:
+			User Name
+			Password mã hóa
+			UID
+			GID
+			Comment
+			Home Directory
+			Login Shell
+		User đầu tiên là 1 user đặc biệt, đây là supper user, là user có quyền cao nhất trong hệ thống
+			root:x:0:0:root:/root:/bin/bash
+		Các Password ở file này hiển thị lên đều là x vì đang sử dụng chế độ là Shadow Password, khi gõ mật khẩu thì sẽ không hiển thị
+			lên bất kỳ 1 ký tự nào
+		Thông tin của password được lưu ở trong 1 file khác đó là /etc/shadow
+	/etc/group: file này chứa thông tin của các group
+		sudo:x:27:ubuntu
+		root:x:0:
+		vagrant:x:1000:
+		Ở mỗi dòng sẽ là thông tin của 1 group, chỉ bao gồm 4 phần:
+			Group Name
+			Password được mã hóa
+			GID: group ID
+			List Users: Danh sách các user nằm trong group đó
+	Thực hành 1 số lệnh về user và group
+		Keyword: Linux command cheat sheet user group
+		useradd [USERNAME]: Thêm 1 user mới, nhưng chỉ có user root mới có thể add user hay group vào hệ thống
+		Dùng sudo để lấy quyền root tạm thời để thêm user mới:
+			sudo useradd quang -> thêm 1 user mới có tên là quang(password là vagrant)
+		Để Switch sang tài khoản mới vừa tạo:
+			su - quang(nhập password của tài khoản là vagrant vào là ok)
+		Dùng tài khoản là quang này để add thêm 1 tài khoản mới:
+			sudo useradd testadd
+			-> quang is not in the sudoers file.  This incident will be reported. Nghĩa là tài khoản này không nằm trong nhóm
+				tài khoản có quyền sudo
+		cat /etc/group để đọc thì thấy rằng trong nhóm sudo không có user là quang
+		Để thêm user là quang vào trong group sudo thì dùng lệnh sau:
+			sudo usermod -aG sudo quang
