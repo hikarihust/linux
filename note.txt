@@ -94,3 +94,24 @@
 		Ngoài việc sử dụng vagrant để cài đặt máy ảo Linux thì nó còn cho phép ta cấu hình, cài đặt luôn các phầm mềm khác ở trong máy ảo
 		Nhờ file cấu hình Vagrantfile thì chúng ta có thể chia sẻ môi trường làm việc với người khác bằng cách copy file Vagrantfile sau
 			đó chay vagrant up
+
+====================================== File và Folder ======================================
+- Một số lệnh cơ bản:
+	Các thao tác cơ bản với file trong Linux
+	Ở trên các hệ điều hành server thì không có giao diện, mà chỉ tương tác với tệp và thư mục qua các câu lệnh
+	pwd: Print Working Directory, lệnh này hiển thị ra thư mục hiện hành
+	cd ..: Thoát ra khỏi thư mục
+	ls: Kiểm tra toàn bộ các file và thư mục có trong thư mục hiện tại
+	mkdir: Make Directory -> tạo thư mục mới
+		mkdir <tên thư mục>
+	mkdir -p: Tạo ra 1 cây thư mục
+		mkdir -p Demo3/Demo4/Demo5
+	touch: Tạo file
+		touch <tên file>
+	echo <nội dung> > <tên file>: Vừa tạo file và vừa ghi nội dung cho nó
+	rm <tên file>: Remove -> để xóa 1 file
+	rmdir <tên thư mục>: Remove Directory -> Xóa thư mục
+	rm -r <têm thư mục>: remove directories and their contents recursively -> Xóa thư mục và toàn bộ các file, thư mục nằm ở bên trong
+	cp <file nguồn> <file đích> sao chép file từ vị trí nguồn đến vị trí đích
+	cp -r <thư mục nguồn> <thư mục đích>: sao chép thư mục và toàn bộ dữ liệu bên trong.
+	mv <tên file> <thư mục đích>: Move file đến 1 thư mục nào đó
