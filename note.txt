@@ -128,3 +128,19 @@
 	find -name qua*.txt: Tìm tập tin có đuôi là txt mà tên được bắt đầu là qua
 	find . -name quang\*: Tìm kiếm tất cả các tập tin và thư mục nằm trong thư mục hiện hành có bắt đầu là quang
 	find -type f -name '*txt': Tìm kiếm tất cả các file có đuôi là .txt
+	
+- Cách sử dụng vim để mở và edit file trên server:
+	Keyword: How to quit the vi/vim editor without saving your changes
+	vim quang.txt: Mở file quang.txt bằng trình soạn thảo vim
+	Các bước để thoát khỏi vim và không thực hiện lưu file đã mở:
+		- Nhấn phím Esc
+		- Gõ dấu :
+		- Nhập q! và nhấn Ennter
+	Các bước để mở file trên server bằng vim rồi sửa file sau đó lưu lại:
+		vim quang.txt: Mở file quang.txt bằng vim
+		Nhấn phím 'i' để có thể sửa file(mode lúc này là insert, ở phía dưới của vim có hiển thị lên -- INSERT --) -> sửa file
+		Nhấn phím Esc sau khi sửa xong
+		:w: Lưu file đã sửa
+		:q: Thoát
+		Sau đó có thể dùng lệnh cat để xem lại nội dung file trên:
+			cat quang.txt
