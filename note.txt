@@ -199,3 +199,237 @@
 		cat /etc/group để đọc thì thấy rằng trong nhóm sudo không có user là quang
 		Để thêm user là quang vào trong group sudo thì dùng lệnh sau:
 			sudo usermod -aG sudo quang
+- Phân quyền User và Group:
+	Một file trong Linux sẽ được phân quyền truy cập đối với 3 đối tượng:
+		Owner: Chủ sở hữu
+		Group: Nhóm sở hữu
+		Others: Các user khác mà không nằm trong 2 nhóm trên
+		Các quyền truy cập có thể là: Read and write hoặc Read-only
+	Đăng nhập vào một tài khoản khác: su
+		su <tên tài khoản>
+	Kiểm tra xem tài khoản đang đăng nhập là tài khoản nào:
+		whoami
+	Phân quyền cho cả 1 thư mục nào đó, như vậy thì các file trong thư mục này sẽ được bảo mật hơn, các user khác sẽ không đọc được
+		ls -la: Để xem cấu trúc của 1 tập tin, thư mục
+			Hiện nay trong thư mục của user vagrant có 1 folder quang và 1 file quang.txt:
+			drwxrwxr-x 3 vagrant vagrant 4096 Jul  7 10:24 quang
+			-rw-rw-r-- 1 vagrant vagrant   48 Jul  7 11:13 quang.txt
+				-> Giá trị đầu tiên là loại file: d có nghĩa là thư mục
+					r(read): Quyền đọc file/folder(được biểu diễn bằng số 4)
+					w(write): Quyền ghi/sửa nội dung file/folder(được biểu diễn bằng số 2)
+					x(execute): Quyền thực thi(truy cập). Đối với thư mục thì cần phải có quyền execute thì mới dùng lệnh cd để truy cập vào được
+						(được biểu diễn bằng số 1)
+					-(Deny): Không có quyền(được biểu diễn bằng số 0)
+		chmod 770 quang: Cấp quyền truy cập đầy đủ(rwx: đọc, ghi/sửa, truy cập vào thư mục) cho chủ sở hữu(vagrant), nhóm quản trị(những
+			users thuộc group mà chủ sở hữu(vagrant) của thư mục này), các user khác trên máy thì không có quyền gì 
+		su quang: Đăng nhập lại vào với tài khoản là quang
+		ls: Để list các folder, file có trong home/vagrant: quang, quang.txt
+		cd quang: Truy cập vào folder quang
+		Permission denied
+	Xem danh sách Group mà một User đã tham gia:
+		id [tên user]
+	Phân quyền với group:
+		Đăng nhập bằng tài khoản là vagrant
+		Tạo thêm 1 group mới tên là friend:
+			sudo groupadd friend
+		Cho tài khoản là quang vào trong group friend này:
+			sudo usermod -aG friend quang
+		Kiểm tra lại thông tin của group:
+			cat /etc/group
+			->friend:x:1003:quang
+			Thấy rằng group friend đã có user là quang
+		Có thể xem danh sách Group mà user quang đã tham gia:
+			id quang
+			->uid=1002(quang) gid=1002(quang) groups=1002(quang),27(sudo),1003(friend)
+			id vagrant
+			-> uid=1000(vagrant) gid=1000(vagrant) groups=1000(vagrant)
+		-> Phân quyền cho group friend cho phép đọc, ghi hay truy cập folder quang nằm trong /home/vagrant thì mặc định user quang cũng có 
+			quyền đọc, ghi hay truy cập vào thư mục /home/vagrant/quang
+    
+  Thực hành phân quyền user và group bằng command line:
+    ls -l: Kiểm tra quyền truy cập vào 1 file hay thư mục, muốn xem thêm cả những file ẩn thì thêm tham số là -a
+      drwxrwx--- 3 vagrant vagrant 4096 Jul  7 10:24 quang
+      -rw-rw-r-- 1 vagrant vagrant   48 Jul  7 11:13 quang.txt
+      Để xem quyền hạn của file hay thư mục thì xem ở phần đầu tiên, ở ký hiệu đầu tiên:
+        d: Thư mục(directory)
+        -: File
+      Các ký tự tiếp theo được chia làm 3 phần, mỗi phần có 3 ký tự, nó là phân quyền tương ứng với cả Owner(chủ sở hữu file or thư mục), 
+        Group và Others(các người dùng khác)
+      Có 3 ký tự để mô tả quyền:
+        r: Read là quyền đọc, đối với file là xem nội dung file còn đối với thư mục thì là xem danh sách bên trong thư mục
+        w: Write là quyền ghi, đối với file thì là thay đổi nội dung file, còn đổi thư mục thì là di chuyển hay là thay đổi tên thư mục
+        x: Execute là quyền là quyền thực thi, nó cho phép thực thi 1 file nếu đó là 1 file chương trình, còn đối với thư mục thì nó cho
+          phép di chuyển vào bên trong thư mục và thao tác với các thư mục con ở bên trong
+      Giá trị tiếp theo là ai là chủ sở hữu(Owner) của file hay thư mục, nhóm sở hữu(group) là gì
+    Chuyển nhóm sở hữu của 1 thư mục: chgrp <tên group> <tên thư mục>: Để thay đổi group
+      vagrant@local-server:~$ ls -l
+      total 8
+      drwxrwx--- 3 vagrant vagrant 4096 Jul  7 10:24 quang
+      -rw-rw-r-- 1 vagrant vagrant   48 Jul  7 11:13 quang.txt
+      vagrant@local-server:~$ sudo chgrp friend quang
+      vagrant@local-server:~$ ls -l
+      total 8
+      drwxrwx--- 3 vagrant friend  4096 Jul  7 10:24 quang
+      -rw-rw-r-- 1 vagrant vagrant   48 Jul  7 11:13 quang.txt
+      -> Kiểm tra lại thì thấy rằng thư mục quang đã có group là friend
+        Thư mục quang ban đầu thuộc nhóm sở hữu là vagrant, quyền của Others là --- nên user quang thuộc nhóm friend sẽ không có quyền làm  
+          gì cả. Nhưng sau khi chuyển nhóm sở hữu vagrant -> friend thì user thuộc nhóm friend cũng có các quyền truy cập, đọc và ghi
+        vagrant@local-server:~$ su quang
+        quang@local-server:/home/vagrant$ cd quang/
+        quang@local-server:/home/vagrant/quang$ ls
+        quang1  quang2.txt
+      Tạo 1 folder mới có tên là project, truy cập vào folder đó và tạo thêm file mới đó là index.html, thay đổi quyền truy cập cho file đó 
+        thành Read Only đối với cả 3 đối tượng(Owner, Group và Others)
+        vagrant@local-server:~$ mkdir project
+        vagrant@local-server:~$ cd project/
+        vagrant@local-server:~/project$ touch index.html
+        vagrant@local-server:~/project$ ls -l
+        total 0
+        -rw-rw-r-- 1 vagrant vagrant 0 Jul 13 09:27 index.html
+        vagrant@local-server:~/project$ chmod 444 index.html
+        vagrant@local-server:~/project$ ls -l
+        total 0
+        -r--r--r-- 1 vagrant vagrant 0 Jul 13 09:27 index.html
+        vagrant@local-server:~/project$ rm index.html
+        rm: remove write-protected regular empty file 'index.html'? y
+        vagrant@local-server:~/project$ ls -l
+        total 0
+        -> Lúc này khi thực hiện xóa file index.html thì sẽ có cảnh báo có muốn xóa file mà không có quyền ghi hay không, nhưng vẫn xóa thành
+          công
+      -> Để không cho phép xóa file thì cần phân quyền cho thư mục chứa file(trong trường hợp này là thư mục project) bằng cách gỡ bỏ quyền 
+        Execute của thư mục -> khi đó sẽ không thể cd vào trong thư mục được hay xóa file ở trong thư mục được nữa
+          vagrant@local-server:~/project$ touch index.html
+          vagrant@local-server:~/project$ ls -l
+          total 0
+          -rw-rw-r-- 1 vagrant vagrant 0 Jul 13 09:44 index.html
+          vagrant@local-server:~/project$ cd ..
+          vagrant@local-server:~$ chmod 666 project/
+          drw-rw-rw- 2 vagrant vagrant 4096 Jul 13 09:44 project
+          drwxrwxrwx 3 vagrant friend  4096 Jul  7 10:24 quang
+          -rw-rw-r-- 1 vagrant vagrant   48 Jul  7 11:13 quang.txt
+          vagrant@local-server:~$ cd project/
+          -bash: cd: project/: Permission denied
+          vagrant@local-server:~$ rm project/index.html
+          rm: cannot remove 'project/index.html': Permission denied
+  Có lệnh thông dụng nhất khi phân quyền đó là chown và chmod:
+    chown: Dùng để thay đổi quyền sở hữu của tập tin, chmod dùng để gán hoặc loại bỏ quyền
+    Thư mục project đang thuộc quyền sở hữu của user và nhóm sở hữu của thư mục này là test
+    Dùng lệnh chown để thay đổi cả Owner lẫn group
+    Cú pháp: chown <tên user>:<tên group> <tên file/tên thư mục>
+    Trong trường hợp không thể thay đổi được sang user hoặc group khác thì phải dùng sudo -> sudo chown <tên user>:<tên group> <tên file/tên thư mục>
+      vagrant@local-server:~$ ls -l
+      total 12
+      drwxrwxrwx 2 quang   test    4096 Jul 13 09:53 project
+      drwxrwxrwx 3 quang   friend  4096 Jul  7 10:24 quang
+      -rw-rw-r-- 1 vagrant vagrant   48 Jul  7 11:13 quang.txt
+      vagrant@local-server:~$ chown vagrant:quang project/
+      chown: changing ownership of 'project/': Operation not permitted
+      vagrant@local-server:~$ sudo chown vagrant:quang project/
+      vagrant@local-server:~$ ls -l
+      total 12
+      drwxrwxrwx 2 vagrant quang   4096 Jul 13 09:53 project
+      drwxrwxrwx 3 quang   friend  4096 Jul  7 10:24 quang
+      -rw-rw-r-- 1 vagrant vagrant   48 Jul  7 11:13 quang.txt
+    Để áp dụng quyền sở hữu cho toàn bộ file và thư mục con nằm ở bên trong nữa thì dùng thêm tham số là -R
+      -> sudo chown -R <tên user>:<tên group> <tên file/tên thư mục>
+      Việc này cho phép thay đổi owner của thư mục và toàn bộ file và thư mục con của nó cũng thay đổi theo
+      vagrant@local-server:~$ ls -l
+      total 12
+      drwxrwxrwx 3 vagrant quang   4096 Jul 13 10:36 project
+      drwxrwxrwx 3 quang   friend  4096 Jul  7 10:24 quang
+      -rw-rw-r-- 1 vagrant vagrant   48 Jul  7 11:13 quang.txt
+      vagrant@local-server:~$ cd project/
+      vagrant@local-server:~/project$ ls -l
+      total 4
+      -rw-rw-r-- 1 quang   quang      0 Jul 13 10:36 file1.txt
+      -r--r--r-- 1 vagrant vagrant    0 Jul 13 09:44 index.htmml
+      drwxrwxr-x 2 quang   quang   4096 Jul 13 10:36 quang1
+      vagrant@local-server:~/project$ cd ..
+      vagrant@local-server:~$ sudo chown -R vagrant:test project/
+      vagrant@local-server:~$ ls -l
+      total 12
+      drwxrwxrwx 3 vagrant test    4096 Jul 13 10:36 project
+      drwxrwxrwx 3 quang   friend  4096 Jul  7 10:24 quang
+      -rw-rw-r-- 1 vagrant vagrant   48 Jul  7 11:13 quang.txt
+      vagrant@local-server:~$ cd project/
+      vagrant@local-server:~/project$ ls -l
+      total 4
+      -rw-rw-r-- 1 vagrant test    0 Jul 13 10:36 file1.txt
+      -r--r--r-- 1 vagrant test    0 Jul 13 09:44 index.htmml
+      drwxrwxr-x 2 vagrant test 4096 Jul 13 10:36 quang1
+      vagrant@local-server:~/project$
+    chmod: Dùng để thêm bớt các quyền như là read, write và execute cho các đối tượng
+    Cú pháp: chmod <quyền> <file/directory>
+    Ở phần quyền này thì có 2 cách để thể hiện:
+      Sử dụng các ký tự chữ cái: r(read), w(write), x(execute), u(phân quyền cho Owner), g(phân quyền cho group), o(phân quyền cho Others)
+        a(phân quyền cho cả 3 đối tượng)
+        +: Dùng để thêm quyền
+        -: Dùng để bớt Quyền
+        =: Để thiết lập quyền 1 cách chính xác
+        Trong trường hợp áp dụng phân quyền cho 2 đối tượng cùng 1 lúc thì viết liền nhau và phân cách nhau bởi dấu phẩy
+          vagrant@local-server:~$ ls -l
+          total 12
+          drwxrwxrwx 3 quang   quang   4096 Jul 13 10:36 project
+          drwxrwxrwx 3 quang   friend  4096 Jul  7 10:24 quang
+          -rw-rw-r-- 1 vagrant vagrant   48 Jul  7 11:13 quang.txt
+          vagrant@local-server:~$ cd project/
+          vagrant@local-server:~/project$ ls -l
+          total 4
+          -rw-rw-r-- 1 quang quang    0 Jul 13 10:36 file1.txt
+          -r--r--r-- 1 quang quang    0 Jul 13 09:44 index.htmml
+          drwxrwxr-x 2 quang quang 4096 Jul 13 10:36 quang1
+          vagrant@local-server:~/project$ sudo chmod u+x file1.txt
+          vagrant@local-server:~/project$ ls -l
+          total 4
+          -rwxrw-r-- 1 quang quang    0 Jul 13 10:36 file1.txt
+          -r--r--r-- 1 quang quang    0 Jul 13 09:44 index.htmml
+          drwxrwxr-x 2 quang quang 4096 Jul 13 10:36 quang1
+          vagrant@local-server:~/project$ sudo chmod g-w file1.txt
+          vagrant@local-server:~/project$ ls -l
+          total 4
+          -rwxr--r-- 1 quang quang    0 Jul 13 10:36 file1.txt
+          -r--r--r-- 1 quang quang    0 Jul 13 09:44 index.htmml
+          drwxrwxr-x 2 quang quang 4096 Jul 13 10:36 quang1
+          vagrant@local-server:~/project$ sudo chmod o=rx file1.txt
+          vagrant@local-server:~/project$ ls -l
+          total 4
+          -rwxr--r-x 1 quang quang    0 Jul 13 10:36 file1.txt
+          -r--r--r-- 1 quang quang    0 Jul 13 09:44 index.htmml
+          drwxrwxr-x 2 quang quang 4096 Jul 13 10:36 quang1
+          vagrant@local-server:~/project$ sudo chmod u-x,g+w file1.txt
+          vagrant@local-server:~/project$ ls -l
+          total 4
+          -rw-rw-r-x 1 quang quang    0 Jul 13 10:36 file1.txt
+          -r--r--r-- 1 quang quang    0 Jul 13 09:44 index.htmml
+          drwxrwxr-x 2 quang quang 4096 Jul 13 10:36 quang1
+      Sử dụng chữ số trong hệ bát phân(các số từ 0 đến 7) để mô tả quyền. Có 3 đối tượng được phân quyền đó là Owner, group và user thì 
+        sẽ được mô tả bởi 3 chữ số
+        Số 4: Quyền đọc(r)
+        Số 2: Quyền ghi(w)
+        Số 1: Quyền thực thi(x)
+        Số 0: Không có quyền nào(-)
+        Số 5: Chỉ có 2 quyền là read và execute
+        Số 7: Có đầy đủ 3 quyền read, write và execute
+          vagrant@local-server:~/project$ ls -l
+          total 4
+          -rw-rw-r-x 1 quang quang    0 Jul 13 10:36 file1.txt
+          -r--r--r-- 1 quang quang    0 Jul 13 09:44 index.htmml
+          drwxrwxr-x 2 quang quang 4096 Jul 13 10:36 quang1
+          vagrant@local-server:~/project$ sudo chmod 777 file1.txt
+          vagrant@local-server:~/project$ ls -l
+          total 4
+          -rwxrwxrwx 1 quang quang    0 Jul 13 10:36 file1.txt
+          -r--r--r-- 1 quang quang    0 Jul 13 09:44 index.htmml
+          drwxrwxr-x 2 quang quang 4096 Jul 13 10:36 quang1
+          vagrant@local-server:~/project$ sudo chmod 755 file1.txt
+          vagrant@local-server:~/project$ ls -l
+          total 4
+          -rwxr-xr-x 1 quang quang    0 Jul 13 10:36 file1.txt
+          -r--r--r-- 1 quang quang    0 Jul 13 09:44 index.htmml
+          drwxrwxr-x 2 quang quang 4096 Jul 13 10:36 quang1
+          vagrant@local-server:~/project$ sudo chmod 700 file1.txt
+          vagrant@local-server:~/project$ ls -l
+          total 4
+          -rwx------ 1 quang quang    0 Jul 13 10:36 file1.txt
+          -r--r--r-- 1 quang quang    0 Jul 13 09:44 index.htmml
+          drwxrwxr-x 2 quang quang 4096 Jul 13 10:36 quang1
