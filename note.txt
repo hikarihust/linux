@@ -433,3 +433,60 @@
           -rwx------ 1 quang quang    0 Jul 13 10:36 file1.txt
           -r--r--r-- 1 quang quang    0 Jul 13 09:44 index.htmml
           drwxrwxr-x 2 quang quang 4096 Jul 13 10:36 quang1
+
+====================================== Cài đặt phần mềm ======================================
+- Package management:
+  Khi quản lý 1 server Linux thì công việc tốn khá nhiều time đó là cài đặt, cấu hình các phần mềm
+  Trong hệ điều hành Linux thì đều có sẵn các công cụ để quản lý việc cài đặt, cập nhật hay gỡ bỏ các 
+    gói phần mềm không cần thiết
+  Ứng với mỗi hệ điều hành thì sẽ có 1 số công cụ quản lý phần mềm riêng
+    Ubuntu và Debian có dpkg, apt, apt-get
+    Fedora và CentOS có rmp, yum
+    MacOS có homebrew
+  Ở Ubuntu phiên bản 14 trở lên có 1 công cụ là apt còn đối với các bản Ubuntu cũ hơn hay dòng Debian thì
+    có apt-get
+  apt-get cũng là 1 phần mềm hay gọi là Package, nó dùng để quản lý các Package khác
+  Để xem các lệnh của apt-get: apt-get --help
+    -> các lệnh hay dùng đó là: update, upgrade, install, remove...
+    Lệnh update lại các thông tin của các gói phần mềm ở trên máy
+      -> sudo apt-get update
+  Trước khi cài đặt 1 Package nào đó thì nên chạy lệnh update để lấy thông tin mới nhất, version mới nhất của
+    package
+  Để cài 1 package thì dùng lệnh: sudo apt-get install
+    sudo apt-get install fortune-mod
+    package này có tác dụng hiển thị lên 1 câu ngạn ngữ, danh ngôn hay 1 đoạn văn bất kỳ bằng tiếng anh
+    Trước khi cài thì sẽ có các thông báo hiển thị:
+      The following additional packages will be installed:
+        fortunes-min librecode0
+      Suggested packages:
+        fortunes x11-utils
+      The following NEW packages will be installed:
+        fortune-mod fortunes-min librecode0
+      Ở thông báo này có nghĩa là có package đi kèm sẽ được cài đặt cùng đó là: fortunes-min librecode0
+    Khi cài đặt xong thì có thể sử dụng được fortune chỉ đơn giản là gõ lệnh fortune
+  Để kiểm tra file chạy của package ở đâu thì dùng lệnh which: which fortune
+    vagrant@local-server:~$ which fortune
+    /usr/games/fortune
+  Xóa package: sudo apt-get remove fortune-mod
+    The following packages were automatically installed and are no longer required:
+      fortunes-min librecode0
+    Use 'sudo apt autoremove' to remove them.
+    The following packages will be REMOVED:
+      fortune-mod
+    0 upgraded, 0 newly installed, 1 to remove and 15 not upgraded.
+    After this operation, 141 kB disk space will be freed.
+    Do you want to continue? [Y/n] y
+  Xóa kiểu trên thì nó sẽ không xóa các file cấu hình, để xóa được các file cấu hình thì dùng thêm tham Số
+    là --purge
+    sudo apt-get remove --purge fortune-mod
+  Kiểm tra lại dùng lệnh which: which fortune
+    ->Không tìm thấy file cấu hình nữa, có nghĩa là nó đã được remove
+  dpkg -l: Hiển thị tất cả các package mà ta đã cài ở trên máy
+    ii  fortunes-min       1:1.99.1-7     all 
+    ii  librecode0:amd64   3.6-22         amd64 
+    ...
+  dpkg -l | grep fortune: Lọc các kết quả có chứa chữ fortune
+    ii  fortunes-min                     1:1.99.1-7 
+    sudo apt-get remove --purge fortunes-min
+    sudo apt-get remove --purge librecode0
+  Để nâng cấp phiên bản của 1 package: apt-get install --only-upgrade [tên package]
