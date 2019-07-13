@@ -490,3 +490,58 @@
     sudo apt-get remove --purge fortunes-min
     sudo apt-get remove --purge librecode0
   Để nâng cấp phiên bản của 1 package: apt-get install --only-upgrade [tên package]
+- Repositories:
+  Cài đặt phền mềm trên Window: Khi cài đặt 1 ứng dụng trên window thì phải vào trang web của nhà xuất bản 
+    và download bộ cài đặt về máy
+  Cài đặt phần mềm trên Linux: Trên Linux có 1 nơi để chứa toàn bộ những phần mềm mà chứng ta có thể cài đặt
+    gọi là Repository
+  Repository là 1 kho chứa các phần mềm đã được kiểm duyệt và xây dựng cụ thể cho các phiên bản của hệ điều 
+    hành Linux, nó giúp chúng ta cài đặt phần mềm dễ dàng hơn và bảo mật hơn, tránh được các phần mềm độc hại
+  Để giúp việc cài đặt phần mềm được thực hiện nhanh nhất thì 1 hệ điều hành sẽ cung cấp nhiều Repositories ở
+   các địa điểm khác nhau
+  Với hệ điều hành Ubuntu thì ở Mỹ thì có thể tải phần mềm về ở địa chỉ là us.archive.ubuntu.com, còn ở Việt
+    Nam thì tải về từ địa chỉ là vn.archive.ubuntu.com
+  Cài đặt phần mềm là cowsay: sudo apt install cowsay
+    Ở phần mô tả cài đặt apt sẽ tìm và download package cowsay ở trên Repository là http://archive.ubuntu.com/ubuntu
+    Địa chỉ này có thể được chọn khi cài hệ điều hành hoặc có thể thay đổi được ở file cấu hình
+    Trong trường hợp mình dùng server ở VN thì có thay đổi là http://vn.archive.ubuntu.com/ubuntu giúp việc tải phần 
+      mềm nhanh hơn
+    Cách sửa cấu hình: Sửa ở file sources.list ở trong thư mục /etc/apt
+      Ở trong file này có các dòng khai báo các Repository mà phần mềm quản lý sẽ lấy thông tin
+      Băt đầu là chữ deb: Là mô tả loại gói dùng cho hệ điều hành họ Debian
+      Tiếp theo là địa chỉ của Repository: http://archive.ubuntu.com/ubuntu
+      xenial: là tên của hệ điều hành
+      main restricted universe multiverse là 4 loại Repository chính
+      Đổi sang địa chỉ là: http://vn.archive.ubuntu.com/ubuntu
+    Sau khi sửa xong thì nhấn Ctrl+X để thoát ra khỏi trình editor nano(Ctrl+X, sau đó có 1 hộp thoại confirm hỏi có
+      muốn lưu lại nội dung mới hay không -> nhấn Y để đồng ý, sau đó nhấn Ennter)
+    Sau khi lưu xong thì cập nhật lại các package thấy rằng có 1 số Repository đã được đổi thành vn
+      sudo apt install cowsay
+        The following additional packages will be installed:
+          cowsay-off
+        Suggested packages:
+          filters
+        The following NEW packages will be installed:
+          cowsay cowsay-off
+      Do you want to continue? [Y/n] y
+        Get:1 http://archive.ubuntu.com/ubuntu xenial/universe amd64 cowsay all 3.03+dfsg1-15 [18.0 kB]
+        Get:2 http://archive.ubuntu.com/ubuntu xenial/universe amd64 cowsay-off all 3.03+dfsg1-15 [3,640 B]
+      vagrant@local-server:/etc/apt$ sudo nano sources.list
+        deb http://vn.archive.ubuntu.com/ubuntu xenial-updates universe
+        deb http://archive.ubuntu.com/ubuntu xenial multiverse
+        deb http://archive.ubuntu.com/ubuntu xenial-updates multiverse
+      sudo apt update
+        Get:12 http://vn.archive.ubuntu.com/ubuntu xenial/universe Translation-en [4,354 kB]
+        Get:13 http://vn.archive.ubuntu.com/ubuntu xenial-updates/main amd64 Packages [989 kB]
+        Get:14 http://vn.archive.ubuntu.com/ubuntu xenial-updates/main Translation-en [390 kB]
+        Get:15 http://vn.archive.ubuntu.com/ubuntu xenial-updates/restricted amd64 Packages [7,616 B]
+        Get:16 http://vn.archive.ubuntu.com/ubuntu xenial-updates/restricted Translation-en [2,272 B]
+        Get:17 http://vn.archive.ubuntu.com/ubuntu xenial-updates/universe amd64 Packages [754 kB]
+        Get:18 http://vn.archive.ubuntu.com/ubuntu xenial-updates/universe Translation-en [314 kB]
+    Trong Ubuntu, ngoài cấu hình Repository qua file /etc/apt/sources.list, chúng ta có thể cấu hình Repository 
+      bằng cách tạo bất kỳ file nào có đuôi là .list và đặt trong thư mục /etc/apt/sources.list.d/, ví dụ 
+        /etc/apt/sources.list.d/virtualbox.list
+    Trong trường hợp không kết nối đến Repository được thì chúng ta đổi sang Repository khác nhưng nên chọn 
+      Repository nào gần vị trí Server nhất.
+    Với các hệ điều hành khác, file cấu hình và thư mục cấu hình Repository sẽ khác với Ubuntu. Ví dụ trên 
+      CentOS các file cấu hình sẽ có đuôi là .repo và nằm trong thư mục /etc/yum.repos.d/
