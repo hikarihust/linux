@@ -545,3 +545,10 @@
       Repository nào gần vị trí Server nhất.
     Với các hệ điều hành khác, file cấu hình và thư mục cấu hình Repository sẽ khác với Ubuntu. Ví dụ trên 
       CentOS các file cấu hình sẽ có đuôi là .repo và nằm trong thư mục /etc/yum.repos.d/
+
+====================================== Network ======================================
+- SSH: 
+  Là 1 giao thức quản trị từ xa của hệ điều hành Linux
+  Đây là 1 giao thức truy cập từ xa an toàn và có mã hóa dữ liệu chứng thực
+  Mô hình của nó là Client-Server trên nền TCP với cổng mặc là 22
+  Cũng có thể dùng để bổ sung cơ chế an toàn cho các giao thức không an toàn khác
