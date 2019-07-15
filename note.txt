@@ -552,3 +552,48 @@
   Đây là 1 giao thức truy cập từ xa an toàn và có mã hóa dữ liệu chứng thực
   Mô hình của nó là Client-Server trên nền TCP với cổng mặc là 22
   Cũng có thể dùng để bổ sung cơ chế an toàn cho các giao thức không an toàn khác
+
+====================================== Process và Services ======================================
+- Process: 
+  Tiến trình là 1 chương trình đang thực thi và nó có các thuộc tính như sau:
+    PID: Mã tiến trình(Process ID)
+    UID: Chủ sở hữu
+    GID: Nhóm sở hữu
+    PPID: Tiến trình cha của nó, cũng là 1 tiến trình nhưng mà trong khi chạy nó lại tạo thêm các tiến trình khác,
+      các tiến trình này có cùng thư mục làm việc, môi trường làm việc với tiến trình cha
+  Quản lý tiến trình:
+    Để quản lý tiến trình thì có các hành động sau:
+      Dừng tiến trình(Stop)
+      Khởi động lại tiến trình(Restart)
+      Chuyển về chế độ chạy nền(Background)
+    Để quản lý theo dõi tiến trình thì có thể dùng lệnh ps
+      Lệnh này liệt kê ra các tiến trình
+      CMD: Lệnh để thực hiện là lệnh nào
+      bash: Là 1 shell script dùng để thông dịch các câu lệnh trên Linux
+      ps: Lệnh chạy trên bash
+        PID TTY          TIME CMD
+      2102 pts/0    00:00:11 bash
+      15553 pts/0    00:00:00 ps
+    ps -A: Hiểu thị ra toàn bộ các process
+      PID TTY          TIME CMD
+        1 ?        00:00:20 systemd
+        2 ?        00:00:00 kthreadd
+        3 ?        00:00:06 ksoftirqd/0
+      ...
+      2102 pts/0    00:00:11 bash
+      16057 ?        00:00:00 nginx
+      16058 ?        00:00:00 nginx
+      16089 pts/0    00:00:00 ps
+      Tiến trình đầu tiền là tiến trình khởi động(Init Process) và có ID là 1, nó là cha của các tiến trình còn lại    
+    Để dừng 1 tiến trình thì có thể dùng câu lệnh kill, để dùng câu lệnh này thì cần phải biết PID của tiến trình muốn
+      dừng 
+      Cách thực thi lệnh kill: kill + <ID của process(PID)>
+      Lệnh này sẽ gửi tiến hiệu dừng chương trình và kiểu tín hiệu này gọi là SIGTERM, là tin hiệu thông báo cho chương
+        trình là mình muốn đóng chương trình
+      Ngoài cách gửi tín hiệu theo kiểu trên thì còn nhiều cách gửi tín hiệu khác
+      Tín hiệu kiểu SIGKILL: Dùng trong trường hợp ví dụ như là chương trình không thể xử lý được tín hiệu SIGTERM thì lúc
+        này sẽ gửi tín hiệu là SIGKILL, tín hiệu này sẽ gửi trực tiếp đên Init Process
+        Cách thực thi: kill -9 <ID của process>
+    Để dừng tiến trình thì nên gửi tín hiệu là SIGTERM, khi đó thì bản thân chương trình sẽ tự xử lý tín hiệu nhận được
+      và đóng chương trình 1 cách an toàn, ví dụ như là trước khi đóng sẽ tự giải phóng tài nguyên hay là các hoạt động
+      đang thực hiện
