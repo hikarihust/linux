@@ -597,3 +597,60 @@
     Để dừng tiến trình thì nên gửi tín hiệu là SIGTERM, khi đó thì bản thân chương trình sẽ tự xử lý tín hiệu nhận được
       và đóng chương trình 1 cách an toàn, ví dụ như là trước khi đóng sẽ tự giải phóng tài nguyên hay là các hoạt động
       đang thực hiện
+- Service:
+  Là 1 ứng dụng hệ thống và nó thường được chạy ngầm để chờ và đáp ứng các yêu cầu gửi đến từ các chương trình khác
+  Service còn được gọi với tên khác là deamons và nó thường kết thúc bằng ký tự d (ví dụ như là sshd)
+  Mỗi 1 service sẽ có 1 file script nằm trong thư mục /etc/init.d dùng để tương tác với service đó
+  Dùng lệnh service để quản lý các service, đối với các hệ điều hành mới thì có thể dùng các lệnh khác như: systemctl, 
+    initctl
+  service --status-all: Dùng để liệt kê tất cả các service ở trong máy
+    Ở trước mỗi tên service sẽ có dấu + và dấu -, đó chính là trạng thái của service là đang bật hay là đang tắt
+    +: Đang bật, một se đang bật thì đó chính là 1 process đang chạy ở chế độ Background(chạy ngầm), do đó chúng ta sẽ không
+      thể nhìn thấy được kết quả ở trên màn hình
+    -: Đang tắt
+    [ + ]  acpid
+    [ + ]  apparmor
+    [ + ]  apport
+    [ + ]  atd
+    [ - ]  bootmisc.sh
+    [ - ]  checkfs.sh
+    [ - ]  checkroot-bootclean.sh
+    [ - ]  checkroot.sh
+  NGINX: Đây là 1 service rất thông dụng
+    Cách cài thì cũng giống như cài các ứng dụng khác
+    Sau khi cài xong thì dịch vụ này sẽ tự động bật
+    Tác dụng của 1 NGINX đóng vai trò là 1 Web Server, khi người dùng truy cập vào server qua trình duyệt thì nó sẽ nhận
+      được yêu cầu và tìm source code của website để trả về kết quả
+    Để test thì có thể truy cập trên browser bằng địa chỉ ip là: http://172.20.20.20/
+    Kết quả hiển thị sẽ là 1 file html có sẵn khi ta cài NGINX
+    Vào thư mục /var/www/html và vào file .. để sửa nội dung hiển thị html bằng cách truy cập vào thư mục /var/www/html/
+      và sửa nội dung của file index.nginx-debian.html
+    Để tắt dịch vụ đi thì dùng lệnh stop
+    Kiểm tra đoạn mã tương tác với service(nằm trong /etc/init.d)
+      vagrant@local-server:/etc/init.d$ sudo apt install nginx
+      The following additional packages will be installed:
+        fontconfig-config fonts-dejavu-core libfontconfig1 libgd3 libjbig0 libjpeg-turbo8 libjpeg8
+        libtiff5 libvpx3 libxpm4 nginx-common nginx-core
+      Suggested packages:
+        libgd-tools fcgiwrap nginx-doc ssl-cert
+      The following NEW packages will be installed:
+        fontconfig-config fonts-dejavu-core libfontconfig1 libgd3 libjbig0 libjpeg-turbo8 libjpeg8
+        libtiff5 libvpx3 libxpm4 nginx nginx-common nginx-core
+      Do you want to continue? [Y/n] y
+      survice --status-all
+      [ + ]  nginx
+      vagrant@local-server:/etc/init.d$ ifconfig
+        Link encap:Ethernet  HWaddr 08:00:27:5b:34:ec
+        inet addr:172.20.20.20  Bcast:172.20.20.255  Mask:255.255.255.0
+        inet6 addr: fe80::a00:27ff:fe5b:34ec/64 Scope:Link
+        vagrant@local-server:/etc$ cd /var/www/html/
+        vagrant@local-server:/var/www/html$ ls
+        index.nginx-debian.html
+        vagrant@local-server:/var/www/html$ sudo vi index.nginx-debian.html
+        sudo service nginx stop
+  Ở một số hệ điều hành, file HTML mặc định của Nginx nằm trong thư mục /usr/share/nginx/html (thay 
+    vì /var/www/html).
+  Đa số các service đều có file cấu hình dịch vụ và thường nằm trong thư mục /etc. Mỗi khi thay đổi cấu hình 
+    thì phải khởi động lại service
+  File cấu hình cho Nginx thường nằm ở thư mục /etc/nginx, trong đó file nginx.conf là file cấu hình chính, 
+    các file cấu hình riêng cho website thường nằm ở /etc/nginx/conf.d hoặc /etc/nginx/sites-enabled/
