@@ -712,3 +712,117 @@
     @hourly: Thực hiện mỗi giờ (giống 0 * * * *).
 
 ====================================== Terminal Shell ======================================
+
+- SoftLink khác HardLink thế nào:
+  Symbolic link: Chia làm 2 loại đó là SoftLink là HardLink
+  SoftLink thì tương tự như tạo shortcut ở trong hệ điều hành của Window
+  SoftLink thì có link đến cả file lẫn thư mục, còn HardLink thì chỉ có thể link đến file 
+  Nếu file gốc ban đầu bị xóa thì SoftLink sẽ không thể hoạt động được nữa vì SoftLink giữ đường dẫn với tên file 
+    cũ nhưng HardLink thì vẫn hoạt động được bình thường
+  Ở trong ổ cứng có 1 giá trị đó là inode, là 1 con số mô tả vị trí các file trong ổ cứng
+  Khi tạo HardLink thì ta sẽ tạo ra 1 file nữa cùng trỏ đến vị trí inode với file gốc
+  Khi tạo SoftLink thì nó giống như 1 shortcut, shortcut này trỏ vào file gốc ban đầu
+  Khi mở HardLink ra để sửa thì do nó cùng trỏ đến cùng 1 vị trí vật lý thông qua inode do đó các file có
+    cùng inode sẽ có nội dung thay đổi theo
+  Khi mở SoftLink ra để sửa thì hệ điều hành cũng sẽ mở trực tiếp file gốc -> do đó khi sửa nội dung của file 
+    SoftLink cũng chính là sửa nội dung của file gốc
+  Hiện tượng broken link sẽ xảy ra với loại file là SoftLink
+  Các HardLink thì chỉ có thể tạo ra ở trên cùng 1 ổ cứng chứ không trỏ sang ổ cứng khác được, SoftLink thì do nó
+    trỏ vào đường dẫn dạng shortcut nên nó có thể trỏ vào bất kỳ thư mục hay file ở trên cùng 1 ổ cứng hay khác ổ cứng
+    đều được
+  Thực hành:
+    Tạo 1 file demo.txt và viết 1 nội dung bất kỳ vào trong file đó
+    Dùng lệnh cp để copy file demo.txt sang 1 file mới đó là demo2.txt
+    Sửa đổi nội dung của demo2.txt
+    Xem lại nội dung của demo.txt và demo2.txt thì thấy nội dung khác nhau
+    ls -ia: Thấy rằng mã hiệu inode của demo.txt(58487) khác với mã hiệu inode của demo2.txt(58488)
+    Dùng lệnh tạo ra HardLink để tạo ra 1 file mới harddemo.txt từ file demo.txt ban đầu
+    Thực hiện lại lệnh ls -ia: Thấy rằng demo.txt và harddemo.txt có cùng chung inode với nhau
+    Thay đổi nội dung của harddemo.txt sau đó xem nội dung của demo.txt thì thấy nội dung của nó cũng thay đổi theo và
+      giống với nội dung của harddemo.txt. Như vậy có nghĩa là khi sửa nội dung của harddemo.txt cũng chính là sửa Nội
+      dung của demo.txt bởi vì cả 2 file này đều trỏ đến cùng 1 vị trí vật lý trên ổ cứng
+    Tạo ra 1 SoftLink softdemo.txt từ demo.txt
+    Thực hiện lại lệnh ls -li *.txt: Thấy rằng softdemo.txt trỏ đến demo.txt và inode của softdemo.txt(55702) cũng khác 
+      với inode của demo.txt(58487)
+    Dùng lệnh cat để xem nội dung của softdemo.txt và demo.txt thì thấy rằng nội dung giống nhau
+    Thực hiện thay đổi nội dung của softdemo.txt rồi xem lại nội dung của softdemo.txt và demo.txt thì thấy rằng nội dung
+      của 2 file này là giống nhau. Như vậy khi sửa đổi nội dung file SoftLink thì cũng chính là sửa đổi nội dung của file
+      được trỏ đến
+    Thay đổi tên file demo.txt -> mode.txt
+    ls -li *.txt: Thấy rằng file demo.txt đã chuyển thành mode.txt nhưng softdemo.txt vẫn đang trỏ đến demo.txt(không còn
+      tồn tại)
+    Lúc này nếu dùng lệnh cat để mở file demo.txt thì sẽ không mở được nữa và hiện ra câu thông báo là: 'No such file or 
+      directory' bởi vì ở đây SoftLink không trỏ vào inode mà nó trỏ theo tên file
+    Thực hiện đổi lại mode.txt thành demo.txt rồi dùng cat để mở lại softdemo.txt thì thấy lại có thể xem được nội dung 
+      của softdemo.txt
+    Lại thực hiện thay đổi demo.txt thành mode.txt rồi thực hiện mở harddemo.txt thì vẫn mở được bình thường bởi vì HardLink
+      nó trỏ vào inode, do vậy khi mà tên của file gốc thay đổi nhưng do inode của file gốc không đổi, nên HardLink nó vẫn
+      trỏ vào đúng vị trí ở trên ổ cứng -> vẫn truy xuất được
+      vagrant@local-server:~$ touch demo.txt
+      vagrant@local-server:~$ ls
+      demo.txt  log.txt  project  quang  quang.txt
+      vagrant@local-server:~$ vim demo.txt
+      vagrant@local-server:~$ cat demo.txt
+        File goc ban dau
+      vagrant@local-server:~$ cp demo.txt demo2.txt
+      vagrant@local-server:~$ vim demo2.txt
+      vagrant@local-server:~$ cat demo.txt
+      File goc ban dau
+      vagrant@local-server:~$ cat demo2.txt
+      File goc ban dau 2
+      vagrant@local-server:~$ ls -ia
+        66358 .               58286 .bashrc     58481 log.txt   256029 quang              55702 .viminfo
+          1979 ..             256012 .cache     256048 .nano      57971 quang.txt
+        58438 .bash_history   58488 demo2.txt     741 .profile   58480 .selected_editor
+        58276 .bash_logout    58487 demo.txt   256043 project    66361 .ssh
+        vagrant@local-server:~$
+      vagrant@local-server:~$ ln demo.txt harddemo.txt
+      vagrant@local-server:~$ ls -ia *.txt
+        58488 demo2.txt  58487 demo.txt  58487 harddemo.txt  58481 log.txt  57971 quang.txt
+      vagrant@local-server:~$ cat demo.txt
+        File goc ban dau
+      vagrant@local-server:~$ cat harddemo.txt
+        File goc ban dau
+      vagrant@local-server:~$ vim harddemo.txt
+      vagrant@local-server:~$ cat demo.txt
+        File goc ban dau
+        Hello Hell
+      vagrant@local-server:~$ ls -li *.txt
+        58488 -rw-rw-r-- 1 vagrant vagrant  19 Jul 15 11:01 demo2.txt
+        58487 -rw-rw-r-- 2 vagrant vagrant  28 Jul 15 11:21 demo.txt
+        58487 -rw-rw-r-- 2 vagrant vagrant  28 Jul 15 11:21 harddemo.txt
+        58481 -rw-rw-r-- 1 vagrant vagrant 264 Jul 15 09:16 log.txt
+        57971 -rw-rw-r-- 1 vagrant vagrant  48 Jul  7 11:13 quang.txt
+        55702 lrwxrwxrwx 1 vagrant vagrant   8 Jul 15 11:26 softdemo.txt -> demo.txt
+      vagrant@local-server:~$ cat demo.txt
+        File goc ban dau
+        Hello Hell
+      vagrant@local-server:~$ cat softdemo.txt
+        File goc ban dau
+        Hello Hell
+      vagrant@local-server:~$ vim softdemo.txt
+      vagrant@local-server:~$ cat demo.txt
+        File goc ban dau
+        Hello Vietnam
+      vagrant@local-server:~$ cat softdemo.txt
+        File goc ban dau
+        Hello Vietnam
+      vagrant@local-server:~$ mv demo.txt mode.txt
+      vagrant@local-server:~$ ls -li *.txt
+        58488 -rw-rw-r-- 1 vagrant vagrant  19 Jul 15 11:01 demo2.txt
+        58487 -rw-rw-r-- 2 vagrant vagrant  31 Jul 15 11:33 harddemo.txt
+        58481 -rw-rw-r-- 1 vagrant vagrant 264 Jul 15 09:16 log.txt
+        58487 -rw-rw-r-- 2 vagrant vagrant  31 Jul 15 11:33 mode.txt
+        57971 -rw-rw-r-- 1 vagrant vagrant  48 Jul  7 11:13 quang.txt
+        55702 lrwxrwxrwx 1 vagrant vagrant   8 Jul 15 11:26 softdemo.txt -> demo.txt
+      vagrant@local-server:~$ cat softdemo.txt
+        cat: softdemo.txt: No such file or directory
+      vagrant@local-server:~$ mv mode.txt demo.txt
+      vagrant@local-server:~$ cat softdemo.txt
+        File goc ban dau
+        Hello Vietnam
+      vagrant@local-server:~$ mv demo.txt mode.txt
+      vagrant@local-server:~$ cat harddemo.txt
+        File goc ban dau
+        Hello Vietnam
+  Việc tạo ra SoftLink hay HardLink thì nó không tốn thêm dung lượng ổ cứng
