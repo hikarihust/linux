@@ -826,3 +826,98 @@
         File goc ban dau
         Hello Vietnam
   Việc tạo ra SoftLink hay HardLink thì nó không tốn thêm dung lượng ổ cứng
+
+====================================== Bash scripting ======================================
+- Bash Script:
+  Tìm hiểu về Shell Script mà cụ thể là Bash Script
+  Thay vì việc phải tự gõ các câu lệnh để thực hiện nhiều thao tác phức tạp và mất thời gian thì có thể tự viết
+    vào 1 file để thực thi nó và chúng ta gọi nó là Shell Script hay là Shell Program
+  Ở trong Linux thì có nhiều loại Shell khác nhau như: SH Shell, DASH Shell, BASH Shell.
+  Bash Shell là 1 Shell Script tiêu chuẩn và rất thông dụng
+  Mặc định thì trong máy thường có sẵn khá nhiều bash script
+    .bash_history: Lưu lịch sử 
+    .bash_logout: File này sẽ chạy khi user thực hiện logout
+    .bashrc
+  .bash_logout: Nó cũng tương tự như file cấu hình của phần mềm
+  vagrant@local-server:~$ pwd
+    /home/vagrant
+  vagrant@local-server:~$ ls -a | grep bash
+    .bash_history
+    .bash_logout
+    .bashrc
+  vagrant@local-server:~$ cat .bash_logout
+    # ~/.bash_logout: executed by bash(1) when login shell exits.
+    # when leaving the console clear the screen to increase privacy
+    if [ "$SHLVL" = 1 ]; then
+        [ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
+    fi
+  Thực hành:
+    Login vào tài khoản là quang
+    Sửa file .bash_logout bằng cách thêm vào 1 đoạn script: echo "quang da logout" >> logout.txt có tác dụng
+      là ghi ra 1 câu thông báo là "quang da logout" vào file logout.txt
+    Ban đầu thì vẫn chưa có file logout.txt này
+    Tiến hành logout ra khỏi tài khoản quang
+    Vào trong thư mục /home/quang để kiểm tra thì thấy đã xuất hiện file logout.txt
+    Đọc nội dung của file thì thấy nó cũng in ra nội dung 'quang da logout'
+      vagrant@local-server:~$ sudo login quang
+        Password:
+        Welcome to Ubuntu 16.04.6 LTS (GNU/Linux 4.4.0-154-generic x86_64)
+        * Documentation:  https://help.ubuntu.com
+        * Management:     https://landscape.canonical.com
+        * Support:        https://ubuntu.com/advantage
+        15 packages can be updated.
+        8 updates are security updates.
+      quang@local-server:~$ ls -la | grep bash
+        -rw------- 1 quang quang  729 Jul 15 17:26 .bash_history
+        -rw-r--r-- 1 quang quang  257 Jul 15 17:22 .bash_logout
+        -rw-r--r-- 1 quang quang 3771 Jul  7 16:31 .bashrc
+      quang@local-server:~$ sudo vim .bash_logout
+      quang@local-server:~$ ls -la
+        total 32
+        drwxr-xr-x 3 quang quang 4096 Jul 15 17:35 .
+        drwxr-xr-x 5 root  root  4096 Jul  7 16:31 ..
+        -rw------- 1 quang quang  729 Jul 15 17:26 .bash_history
+        -rw-r--r-- 1 quang quang  257 Jul 15 17:22 .bash_logout
+        -rw-r--r-- 1 quang quang 3771 Jul  7 16:31 .bashrc
+        drwx------ 2 quang quang 4096 Jul 15 17:30 .cache
+        -rw-r--r-- 1 quang quang  655 Jul  7 16:31 .profile
+        -rw-r--r-- 1 quang quang    0 Jul 15 17:08 .sudo_as_admin_successful
+        -rw------- 1 quang quang 3606 Jul 15 17:35 .viminfo
+      quang@local-server:~$ logout
+      vagrant@local-server:~$ cd /home/quang/
+      vagrant@local-server:/home/quang$ ls
+        logout.txt
+      vagrant@local-server:/home/quang$ cat logout.txt
+        quang da logout
+    Tự viết 1 file bash script của mình với tên là myscript
+    Ở dòng đầu tiên của script thì phải khai báo loại ngôn ngữ mà mình sử dụng, ở đây mình dùng bash nên sẽ phải
+      khai báo #!/bin/bash
+    /bin/bash là đường dẫn trỏ đến lệnh bash
+    script đơn giản có tác dụng in ra màn hình 1 vài dòng message
+    Dùng lệnh bash để chạy script
+    Ngoài ra thì còn có 1 cách chạy khác nữa đó là cấp quyền execute cho script sau đó chạy bằng lệnh là ./<tên script>
+      vagrant@local-server:~$ vim myscript
+        #!/bin/bash
+        echo ""
+        echo "Hello my friends"
+        echo "---"
+        date
+        echo "---"
+      vagrant@local-server:~$ bash myscript
+        Hello my friends
+        ---
+        Mon Jul 15 17:55:15 UTC 2019
+        ---
+      vagrant@local-server:~$ ls -l
+        total 28
+        -rw-rw-r-- 1 vagrant vagrant   80 Jul 15 17:53 myscript
+      vagrant@local-server:~$ chmod u+x myscript
+      vagrant@local-server:~$ ls -l
+        total 28
+        -rwxrw-r-- 1 vagrant vagrant   80 Jul 15 17:53 myscript
+      vagrant@local-server:~$ ./myscript
+        Hello my friends
+        ---
+        Mon Jul 15 18:00:33 UTC 2019
+        ---
+  Để xem các Shell mà hệ điều hành đã có dùng lệnh cat /etc/shells, nếu chưa có thì cài như các package bình thường.
