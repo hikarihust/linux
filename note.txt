@@ -654,3 +654,59 @@
     thì phải khởi động lại service
   File cấu hình cho Nginx thường nằm ở thư mục /etc/nginx, trong đó file nginx.conf là file cấu hình chính, 
     các file cấu hình riêng cho website thường nằm ở /etc/nginx/conf.d hoặc /etc/nginx/sites-enabled/
+- Service Cron:
+  Server Cron được ứng dụng rất nhiều, có tác dụng thực hiện các tác vụ định kỳ vào 1 time cụ thể nào đó mà chúng
+    ta định nghĩa, tác vụ này còn được gọi là Cron Job
+  Mặc định thì service Cron đã được cài đặt và chạy sẵn, nên chỉ cần cấu hình qua lệnh crontab
+  Để chỉnh sửa cấu hình thì dùng thêm tham số là -e
+  Đối với lần đầu sử dụng thì sẽ được hỏi là dùng trình soạn thảo nào
+  Để định nghĩa thời gian thì cấu hình 5 giá trị đó là phút, giờ, ngày, tháng và thứ.
+    0: Chủ nhật
+    1: Thứ 2
+    2: Thứ 3
+    ...
+  Dấu * dùng để định nghĩa cho mỗi, hằng(mỗi phút, mỗi giây, hằng ngày, hằng giờ...)
+  0 5 * * 1: Chạy vào 5 giờ sáng thứ 2 mỗi tuần
+  Cú pháp: m h  dom mon dow   command
+  command là câu lệnh sẽ thực thi khi đến giờ cài đặt
+    vagrant@local-server:~$ crontab -e
+    no crontab for vagrant - using an empty one
+    Select an editor.  To change later, run 'select-editor'.
+      1. /bin/ed
+      2. /bin/nano        <---- easiest
+      3. /usr/bin/vim.basic
+      4. /usr/bin/vim.tiny
+    Choose 1-4 [2]:
+  Thực hành:
+    Ở thư mục hiện hành(/home/vagrant) tạo ra 1 file là log.txt
+    Demo cứ mỗi phút sẽ ghi 1 dòng chữ ở trong file log.txt này
+    Sau khi cài đặt thông số xong thì chờ mỗi phút và kiểm tra lại file log.txt để xem kết quả
+    Nếu không muốn nó chạy nữa thì cấu hình lại bằng cách xóa đoạn đã cấu hình hoặc Comment đoạn cấu hình đó
+
+      vagrant@local-server:~$ touch log.txt
+      vagrant@local-server:~$ cat log.txt
+      vagrant@local-server:~$ crontab -e
+        * * * * * echo "Backup vao luc `date`" >> log.txt
+      no crontab for vagrant - using an empty one
+      crontab: installing new crontab
+      vagrant@local-server:~$
+      vagrant@local-server:~$ cat log.txt
+        Backup vao luc Mon Jul 15 09:11:01 UTC 2019
+        Backup vao luc Mon Jul 15 09:12:01 UTC 2019
+  Để xem các cấu hình của crontab mà không cần mở file cấu hình ta có thể dùng lệnh:  crontab -l
+  Giá trị số tương ứng với các mốc thời gian:
+    Minutes (phút): 0 - 59
+    Hour (giờ): 0 - 23 (nửa đêm là 0 giờ)
+    Day (ngày): 1 - 31
+    Month (tháng): 1 - 12
+    Weekday (thứ): 0 - 6 (ngày thứ 0 là Chủ Nhật)
+  Có thể cấu hình nhiều mốc thời gian trong cùng 1 cột bằng cách dùng dấu phẩy để ngăn cách, ví dụ cấu 
+    hình thời gian vào lúc 6h sáng và 6h tối mỗi ngày như sau: 
+    * 6,18 * * * Command
+  Một số biến dùng để thay thế cho cấu hình thời gian:
+    @reboot: Thực hiện mỗi khi khởi động.
+    @yearly: Thực hiện ngày 1/1 hàng năm (giống 0 0 1 1 *).
+    @monthly: Thực hiện ngày 1 mỗi tháng (giống 0 0 1 * *).
+    @weekly: Thực hiện vào ngày Chủ nhật hàng tuần (giống 0 0 * * 0).
+    @daily: Thực hiện lúc nửa đêm mỗi ngày (giống 0 0 * * *).
+    @hourly: Thực hiện mỗi giờ (giống 0 * * * *).
