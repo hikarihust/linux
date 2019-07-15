@@ -710,3 +710,5 @@
     @weekly: Thực hiện vào ngày Chủ nhật hàng tuần (giống 0 0 * * 0).
     @daily: Thực hiện lúc nửa đêm mỗi ngày (giống 0 0 * * *).
     @hourly: Thực hiện mỗi giờ (giống 0 * * * *).
+
+====================================== Terminal Shell ======================================
