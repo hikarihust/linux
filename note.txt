@@ -1047,3 +1047,52 @@
     else
         echo "This is directory"
     fi
+
+- Lệnh vòng lặp:
+  Vòng lặp cho phép chúng ta thực hiện các thao tác lặp đi lặp lại 1 cách nhanh chóng
+  Vòng lặp for: for-do-done
+    Phần điều kiện được bao ở phần (())
+  Demo với bài toán là tính giai thừa của 1 số
+    vagrant@local-server:~$ vim myscript 
+      #!/bin/bash
+      number=5
+      kq=1
+      for ((i=1; i<=$number; i++))
+      do
+        kq=$(($kq * $i))
+      done
+      echo $kq
+    vagrant@local-server:~$ bash myscript
+      120
+  Lặp với chuỗi thì không cần điều kiện lặp hoặc là dấu ngoặc tròn nữa
+  Demo: Mỗi vòng lặp sẽ in ra 1 từ ở trong chuỗi cách nhau bởi dấu cách
+  vagrant@local-server:~$ vim myscript
+    #!/bin/bash
+    str="hello hell"
+    for value in $str
+    do
+      echo $value
+    done
+  vagrant@local-server:~$ bash myscript
+    hello
+    hell
+  Vòng lặp while:
+    # Tính giai thừa của 5
+    kq=1
+    i=1
+    while [ $i -le 5 ]
+    do
+      kq=$(($kq * $i))
+      ((i++))
+    done
+    echo $kq
+  Vòng lặp until (ngược với while):
+    # Tính giai thừa của 5
+    kq=1
+    i=1
+    until [ $i -gt 5 ]
+    do
+      kq=$(($kq * $i))
+      ((i++))
+    done
+    echo $kq
