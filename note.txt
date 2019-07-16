@@ -921,3 +921,62 @@
         Mon Jul 15 18:00:33 UTC 2019
         ---
   Để xem các Shell mà hệ điều hành đã có dùng lệnh cat /etc/shells, nếu chưa có thì cài như các package bình thường.
+
+- Biến, tham số:
+  Sử dụng Variable(biến) để khiến cho script của chúng ta linh động hơn
+  Biến trong Bash Script cũng tương tự như ở trong các ngôn ngữ khác, tuy nhiên nó chỉ có 4 kiểu dữ liệu đó là: String, Integer, 
+    Constant và Array. String cà Integer là 2 kiểu dữ liệu thông dụng
+  Khai báo biến thì sẽ bắt đầu bằng tên biến
+  Ở dấu = phải viết liền và không được phép có dấu cách
+  Khi sử dụng biến thì phải thêm $ vào đằng trước
+  Một biến thì có thể đặt tên theo kiểu viết thường hoặc viết hoa
+    vagrant@local-server:~$ vim myscript
+      #!/bin/bash
+      MESSAGE="hello"
+      AGE=10
+      echo $MESSAGE
+      echo $AGE
+    vagrant@local-server:~$ bash myscript
+      hello
+      10
+    vagrant@local-server:~$ vim myscript 
+      #!/bin/bash
+      MESSAGE="hello"
+      AGE=10
+      name="quang"
+      echo $MESSAGE
+      echo $AGE
+      echo $name 
+    vagrant@local-server:~$ bash myscript
+      hello
+      10
+      quang
+  Ngoài ra còn có 1 số biến đặc biệt, gọi là tham số, đó là khi chúng ta gọi script chúng ta truyền tham số vào
+    bash myscript abc -> tham số sẽ có giá trị abc
+  Chúng ta sẽ lấy các giá trị tham số này vào trong script
+  $1 tương ứng với giá trị của tham số đầu tiên
+  $2 tương ứng với giá trị của tham số thứ 2
+  Khi không truyền tham số thì sẽ không có giá trị của tham số đó khi thực hiện bash
+    vagrant@local-server:~$ vim myscript
+      #!/bin/bash
+      number1=$1
+      number2=$2
+      echo "Tham so thu 1: "$number1
+      echo "Tham so thu 2: "$number2
+    vagrant@local-server:~$ bash myscript
+      Tham so thu 1:
+      Tham so thu 2:
+    vagrant@local-server:~$ bash myscript abc 123
+      Tham so thu 1: abc
+      Tham so thu 2: 123
+  Thực hành với script cho phép người dùng truyền vào 1 số bất kỳ và in ra màn hình kết quả là bình phương của số đó
+  Để thực hiện phép tính với số thì cần phải có 2 cặp ngoặc tròn và bên trong sẽ là phép tính
+    vagrant@local-server:~$ vim myscript
+      #!/bin/bash
+      kq=$(($1 * $1))
+      echo "Binh phuong cua $1 la $kq"
+    vagrant@local-server:~$ bash myscript 3
+      Binh phuong cua 3 la 9
+  Ngoài biến sử dụng trong script, chúng ta cũng có thể sử dụng biến ở bên ngoài gọi là biến môi trường, có thể gán trực 
+    tiếp như trong script hoặc dùng lệnh export 
+    export message=hello
