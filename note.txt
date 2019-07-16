@@ -980,3 +980,70 @@
   Ngoài biến sử dụng trong script, chúng ta cũng có thể sử dụng biến ở bên ngoài gọi là biến môi trường, có thể gán trực 
     tiếp như trong script hoặc dùng lệnh export 
     export message=hello
+
+- Lệnh điều kiện:
+  Trong ngoặc vuông[] của if là điều kiện
+  Ở giữa then và fi là các lệnh thực hiện khi điều kiện đúng
+    if[điều kiện]
+    fi
+  Trong trường hợp có else, nghĩa là kiểm tra cả điều kiện sai nữa thì phần giữa then và else là phần điều kiện đúng, phần giữa
+    else và fi là phần điều kiện sai. Có thể đặt if và then trên cùng 1 dòng nhưng phải dùng dấu phẩy để ngăn cách
+    if[điều kiện]; then
+    else
+    fi
+  Để kiểm tra 1 biến giá trị của nó là rỗng hay không tồn tại thì dùng tham số là -z
+  Trường hợp sau then không xử lý gì thì vẫn phải có 1 câu lệnh gì đó ở trong đó
+    vagrant@local-server:~$ vim myscript
+      #!/bin/bash
+        kq=0
+      if [ -z $1 ]; then
+        echo "Xin vui long truyen vao 1 so"
+      else
+        kq=$(($1 * $1))
+        echo "Binh phuong cua $1 la $kq"
+      fi
+    vagrant@local-server:~$ bash myscript
+      Xin vui long truyen vao 1 so
+    vagrant@local-server:~$ bash myscript 5
+      Binh phuong cua 5 la 25
+  So sánh:
+    -gt: Lớn hơn
+    -lt: Bé hơn
+    -le: Nhỏ hơn hoặc bằng
+  Điều kiện hoặc: -o
+  Điều kiện và: -a
+  Phủ định: !
+    vagrant@local-server:~$ vim myscript
+      #!/bin/bash
+      kq=0
+      if [ -z $1 -o $1 -le 0 ]; then
+      echo "Xin vui long truyen vao 1 so lon hon 0"
+      else
+      kq=$(($1 * $1))
+      echo "Binh phuong cua $1 la $kq"
+      fi
+    vagrant@local-server:~$ bash myscript 0
+      Xin vui long truyen vao 1 so lon hon 0
+    vagrant@local-server:~$ bash myscript -1
+      Xin vui long truyen vao 1 so lon hon 0
+    vagrant@local-server:~$ bash myscript 2
+      Binh phuong cua 2 la 4
+  Lệnh so sánh với chuỗi:
+    s1 = s2	Kiểm tra s1 = s2
+    s1 != s2	Kiểm tra s1 khác s2
+    -z s1	Kiểm tra s1 có kích thước bằng 0
+  Lệnh kiểm tra file (nói chung cho cả tệp và thư mục)
+    -f file	Kiểm tra xem file có phải là tệp hay không
+    -d file	Kiểm tra xem file có phải là thư mục hay không
+    -r file	Kiểm tra file có đọc (read) được hay không
+    -w file	Kiểm tra file có ghi (write) được hay không
+    -x file	Kiểm tra file có thực thi (execute) được hay không
+    -s file	Kiểm tra file có kích thước lớn hơn 0 hay không
+    -e file	Kiểm tra xem file có tồn tại hay không
+  Demo:
+    #!/bin/bash
+    if [ -f "/home/robinhuy/demo.sh" ]; then
+        echo "This is file"
+    else
+        echo "This is directory"
+    fi
